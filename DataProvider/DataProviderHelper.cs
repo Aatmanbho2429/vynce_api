@@ -50,9 +50,10 @@ namespace vynce_api.DataProvider
             }
         }
 
-        public async Task<int> ExecuteNonQueryAsync(string commandText, params SqlParameter[] commandParameters)
+        public async Task<(int status, string message)> ExecuteNonQueryAsync(string commandText, params SqlParameter[] commandParameters)
         {
-            int count = 0;
+            int status = 0;
+            string ReturnResult = string.Empty;
             SqlConnection sqlConnection = new SqlConnection(_connectionString);
 
             try
@@ -75,8 +76,9 @@ namespace vynce_api.DataProvider
 
                 // sqlCommand.FetchSize = sqlCommand.FetchSize * 64;
                 await sqlCommand.ExecuteNonQueryAsync();
-                string ReturnResult = Convert.ToString(sqlCommand.Parameters["o_output_data"].Value);
-                count = Convert.ToInt32(ReturnResult);
+                ReturnResult = Convert.ToString(sqlCommand.Parameters["o_output_message"].Value);
+                status = Convert.ToInt32(Convert.ToString(sqlCommand.Parameters["o_output_status"].Value));
+                //count = Convert.ToInt32(ReturnResult);
             }
             catch (Exception ex)
             {
@@ -88,7 +90,7 @@ namespace vynce_api.DataProvider
                 if (sqlConnection.State != ConnectionState.Closed)
                     await sqlConnection.CloseAsync();
             }
-            return count;
+            return (status, ReturnResult);
         }
     }
 }

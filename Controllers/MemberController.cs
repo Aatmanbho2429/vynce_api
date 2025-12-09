@@ -25,5 +25,37 @@ namespace vynce_api.Controllers
                 return await _memberDataProvider.AddMember(request);
             });
         }
+        [HttpPost("list")]
+        public async Task<BaseResponse<MemberListResponse>> MemberList(MemberListRequest request)
+        {
+            return await DelegateControllerCall(async () =>
+            {
+                return await _memberDataProvider.MemberList(request);
+            });
+        }
+        [HttpGet("{id}")]
+        public async Task<BaseResponse<MemberGetResponse>> MemberGet(string id)
+        {
+            return await DelegateControllerCall(async () =>
+            {
+                return await _memberDataProvider.MemberGet(id);
+            });
+        }
+        [HttpDelete("{id}")]
+        public async Task<BaseResponse<int>> MemberDelete(string id)
+        {
+            return await DelegateControllerCall(async () =>
+            {
+                return await _memberDataProvider.MemberDelete(id);
+            });
+        }
+        [HttpPut("{id}")]
+        public async Task<BaseResponse<int>> MemberUpdate(string id, MemberUpdateRequest request)
+        {
+            return await DelegateControllerCall(async () =>
+            {
+                return await _memberDataProvider.MemberUpdate(id, request);
+            });
+        }
     }
 }

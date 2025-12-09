@@ -6,6 +6,6 @@ namespace vynce_api.DataProvider.Interface
     {
         Task<T> ExecuteReaderAsync<T>(string commandText, Func<SqlDataReader, Task<T>> readerParserAction, params SqlParameter[] commandParameters);
 
-        Task<int> ExecuteNonQueryAsync(string commandText, params SqlParameter[] commandParameters);
+        Task<(int status, string message)> ExecuteNonQueryAsync(string commandText, params SqlParameter[] commandParameters);
     }
 }
