@@ -4,6 +4,6 @@ namespace vynce_api.DataProvider.Interface
 {
     public interface ILoginDataProvider
     {
-        Task<BaseResponse<UserAuthResponse>> userAuth(string username, string password);
+        Task<BaseResponse<MemberAuthResponse>> MemberAuth(string email, string password);
     }
 }

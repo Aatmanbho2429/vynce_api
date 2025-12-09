@@ -4,6 +4,6 @@ namespace vynce_api.DataProvider.Interface
 {
     public interface IJwtTokenDataProvider
     {
-        Task<BaseResponse<UserAuthResponse>> defaultToken(string email, string password);
+        Task<BaseResponse<MemberAuthResponse>> defaultToken(string email, string password);
     }
 }

@@ -18,11 +18,11 @@ namespace vynce_api.DataProvider
             _loginDataProvider = loginDataProvider;
         }
 
-        public async Task<BaseResponse<UserAuthResponse>> defaultToken(string email, string password)
+        public async Task<BaseResponse<MemberAuthResponse>> defaultToken(string email, string password)
         {
-            var response = await _loginDataProvider.userAuth(email, password);
+            var response = await _loginDataProvider.MemberAuth(email, password);
 
-            if (response is not null && response.data is not null && response.data.user_id != "" && response.data.email != "")
+            if (response is not null && response.data is not null && response.data.member_id != "" && response.data.email != "")
             {
                 var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
                 var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
@@ -30,7 +30,7 @@ namespace vynce_api.DataProvider
                         //new Claim(JwtRegisteredClaimNames.Sub,response.data.UserID),
                         //new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString()),
                         //new Claim(JwtRegisteredClaimNames.Iat,DateTime.UtcNow.ToString()),
-                        new Claim(ClaimTypes.NameIdentifier, response.data.user_id),
+                        new Claim(ClaimTypes.NameIdentifier, response.data.member_id),
                         new Claim(ClaimTypes.Role, response.data.role_id)
                     };
 

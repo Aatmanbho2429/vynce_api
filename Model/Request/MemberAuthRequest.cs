@@ -1,6 +1,6 @@
 ﻿namespace vynce_api.Model.Request
 {
-    public class UserAuthRequest
+    public class MemberAuthRequest
     {
         public string email { get; set; }
 
