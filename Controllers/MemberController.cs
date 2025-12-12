@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using vynce_api.DataProvider.Interface;
 using vynce_api.Model.Request;
@@ -7,6 +8,7 @@ using vynce_api.Model.Response;
 namespace vynce_api.Controllers
 {
     [Route("api/member")]
+    [AllowAnonymous]
     [ApiController]
     public class MemberController : BaseController
     {
