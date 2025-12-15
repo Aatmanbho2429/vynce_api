@@ -31,6 +31,7 @@ namespace vynce_api.DataProvider
                     email = ConvertString(reader, "email"),
                     phone = ConvertString(reader, "phone"),
                     role_id = ConvertIntiger(reader, "role_id"),
+                    status = ConvertIntiger(reader, "status"),
                     membership_id = ConvertIntiger(reader, "membership_id"),
                     created_date = ConvertToDate(reader, "created_date"),
                     modified_date = ConvertToDate(reader, "modified_date")
@@ -60,6 +61,7 @@ namespace vynce_api.DataProvider
                 response.phone = ConvertString(reader, "phone");
                 response.password = ConvertString(reader, "password");
                 response.role_id = ConvertIntiger(reader, "role_id");
+                response.status = ConvertIntiger(reader, "status");
                 response.membership_id = ConvertIntiger(reader, "membership_id");
                 response.created_date = ConvertToDate(reader, "created_date");
                 response.modified_date = ConvertToDate(reader, "modified_date");
@@ -77,6 +79,7 @@ namespace vynce_api.DataProvider
                 new SqlParameter("i_phone",request.phone),
                 new SqlParameter("i_password",request.password),
                 new SqlParameter("i_role_id",request.role_id),
+                new SqlParameter("i_status",request.status),
                 new SqlParameter("i_membership_id",request.membership_id),
                 new SqlParameter("i_created_date",created_date),
             };
@@ -146,11 +149,13 @@ namespace vynce_api.DataProvider
             var modified_date = DateTime.Now;
             var sqlParameters = new List<SqlParameter>()
             {
+                new SqlParameter("i_member_id",id),
                 new SqlParameter("i_name",request.name),
                 new SqlParameter("i_email",request.email),
                 new SqlParameter("i_phone",request.phone),
                 new SqlParameter("i_password",request.password),
                 new SqlParameter("i_role_id",request.role_id),
+                new SqlParameter("i_status",request.status),
                 new SqlParameter("i_membership_id",request.membership_id),
                 new SqlParameter("i_modified_date",modified_date),
             };
