@@ -85,7 +85,7 @@ namespace vynce_api.DataProvider
             };
 
             sqlParameters.Add(new SqlParameter("o_output_message", SqlDbType.VarChar, 100) { Direction = ParameterDirection.Output });
-            sqlParameters.Add(new SqlParameter("o_output_status", SqlDbType.VarChar, 100) { Direction = ParameterDirection.Output });
+            sqlParameters.Add(new SqlParameter("o_output_status", SqlDbType.Int) { Direction = ParameterDirection.Output });
             var response = await _dataProviderHelper.ExecuteNonQueryAsync(Procedures.MEMBER_ADD_V1, sqlParameters.ToArray());
 
             return new BaseResponse<int>()

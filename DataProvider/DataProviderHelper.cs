@@ -71,7 +71,14 @@ namespace vynce_api.DataProvider
                     spNew.Value = parameter.Value;
                     spNew.SqlDbType = parameter.SqlDbType;
                     spNew.Direction = parameter.Direction;
+
+                    if (parameter.SqlDbType == SqlDbType.VarChar || parameter.SqlDbType == SqlDbType.NVarChar)
+                    {
+                        spNew.Size = parameter.Size > 0 ? parameter.Size : -1;
+                    }
+
                     sqlCommand.Parameters.Add(spNew);
+
                 }
 
                 // sqlCommand.FetchSize = sqlCommand.FetchSize * 64;
