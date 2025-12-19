@@ -4,6 +4,7 @@
     {
         public static string WalletPath;
         public static string ConnectionString;
+        public static string encryptionKey;
         public static string InstrumentationKey = string.Empty;
     }
 }

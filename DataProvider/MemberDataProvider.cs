@@ -29,6 +29,7 @@ namespace vynce_api.DataProvider
                     member_id = ConvertString(reader, "member_id"),
                     name = ConvertString(reader, "name"),
                     email = ConvertString(reader, "email"),
+                    password = ConvertString(reader, "password"),
                     phone = ConvertString(reader, "phone"),
                     role_id = ConvertIntiger(reader, "role_id"),
                     status = ConvertIntiger(reader, "status"),
@@ -72,12 +73,14 @@ namespace vynce_api.DataProvider
 
         public async Task<BaseResponse<int>> AddMember(MemberAddRequest request)
         {
+            string decrypt_pass = CryptoJsAes.Decrypt(request.password, ApplicationConfigurations.encryptionKey);
+            string decrypted_password = System.Text.Json.JsonSerializer.Deserialize<string>(decrypt_pass);
             var created_date = DateTime.UtcNow;
             var sqlParameters = new List<SqlParameter>() {
                 new SqlParameter("i_name",request.name),
                 new SqlParameter("i_email",request.email),
                 new SqlParameter("i_phone",request.phone),
-                new SqlParameter("i_password",request.password),
+                new SqlParameter("i_password",decrypted_password),
                 new SqlParameter("i_role_id",request.role_id),
                 new SqlParameter("i_status",request.status),
                 new SqlParameter("i_membership_id",request.membership_id),

@@ -8,7 +8,6 @@ using vynce_api.Model.Response;
 namespace vynce_api.Controllers
 {
     [Route("api/member")]
-    [AllowAnonymous]
     [ApiController]
     public class MemberController : BaseController
     {

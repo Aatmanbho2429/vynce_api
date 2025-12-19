@@ -22,7 +22,7 @@ namespace vynce_api.Controllers
 
         [AllowAnonymous]
         [HttpPost("auth")]
-        public async Task<BaseResponse<Model.Response.MemberAuthResponse>> GetUserAuth([FromBody] MemberAuthRequest request)
+        public async Task<BaseResponse<MemberAuthResponse>> GetUserAuth(MemberAuthRequest request)
         {
             return await DelegateControllerCall(async () =>
             {

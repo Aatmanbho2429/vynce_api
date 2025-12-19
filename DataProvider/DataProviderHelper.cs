@@ -33,6 +33,7 @@ namespace vynce_api.DataProvider
 
                 using var reader = await sqlCommand.ExecuteReaderAsync(CommandBehavior.CloseConnection);
                 return await readerParserAction(reader);
+
             }
             catch (Exception ex)
             {

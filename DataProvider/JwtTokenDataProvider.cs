@@ -22,7 +22,7 @@ namespace vynce_api.DataProvider
         {
             var response = await _loginDataProvider.MemberAuth(email, password);
 
-            if (response is not null && response.data is not null && response.data.member_id != "" && response.data.email != "")
+            if (response is not null && response.data is not null && response.data.member_id != null && response.data.email != null) 
             {
                 var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
                 var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);

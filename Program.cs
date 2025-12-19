@@ -15,6 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 ApplicationConfigurations.ConnectionString = builder.Configuration.GetSection("ApiOptions:SqlConnection").Value;
+ApplicationConfigurations.encryptionKey = builder.Configuration.GetSection("encryptionKey").Value;
 
 #region dependency injection
 builder.Services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
@@ -44,61 +45,61 @@ builder.Services.AddSwaggerGen(options =>
         Description = "C-Pesa Windows Portal API to support C-Pesa Windows portal"
     });
 
-    //options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
-    //{
-    //    Name = "Authorization",
-    //    Type = SecuritySchemeType.ApiKey,
-    //    Scheme = "Bearer",
-    //    BearerFormat = "JWT",
-    //    In = ParameterLocation.Header,
-    //    Description = "JWT Authorization header using the Bearer scheme."
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "JWT Authorization header using the Bearer scheme."
 
-    //});
-    //options.AddSecurityRequirement(new OpenApiSecurityRequirement
-    //{
-    //    {
-    //        new OpenApiSecurityScheme
-    //        {
-    //            Reference = new OpenApiReference
-    //            {
-    //                Type = ReferenceType.SecurityScheme,
-    //                Id = "Bearer"
-    //            }
-    //        },
-    //        new string[] {}
-    //    }
-    //});
+    });
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
 });
 
-//builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer("defaultToken", options =>
-//{
-//    options.TokenValidationParameters = new TokenValidationParameters
-//    {
-//        ValidateIssuer = true,
-//        ValidateAudience = true,
-//        ValidateLifetime = false,
-//        ValidateIssuerSigningKey = true,
-//        ValidIssuer = builder.Configuration.GetSection("Jwt:Issuer").Get<string>(),
-//        ValidAudience = builder.Configuration.GetSection("Jwt:Issuer").Get<string>(),
-//        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("Jwt:Key").Get<string>()))
-//    };
-//});
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer("defaultToken", options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = false,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration.GetSection("Jwt:Issuer").Get<string>(),
+        ValidAudience = builder.Configuration.GetSection("Jwt:Issuer").Get<string>(),
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("Jwt:Key").Get<string>()))
+    };
+});
 
-//builder.Services.AddAuthorization(options =>
-//{
-//    options.DefaultPolicy = new AuthorizationPolicyBuilder()
-//            .RequireAuthenticatedUser()
-//            .AddAuthenticationSchemes("defaultToken")
-//            .Build();
+builder.Services.AddAuthorization(options =>
+{
+    options.DefaultPolicy = new AuthorizationPolicyBuilder()
+            .RequireAuthenticatedUser()
+            .AddAuthenticationSchemes("defaultToken")
+            .Build();
 
-//    options.AddPolicy("registerTokenPolicy", policy =>
-//    {
-//        policy.RequireAuthenticatedUser();
-//        policy.AddAuthenticationSchemes("registrationToken");
-//        policy.Build();
-//        policy.RequireClaim(ClaimTypes.NameIdentifier, "true");
-//    });
-//});
+    options.AddPolicy("registerTokenPolicy", policy =>
+    {
+        policy.RequireAuthenticatedUser();
+        policy.AddAuthenticationSchemes("registrationToken");
+        policy.Build();
+        policy.RequireClaim(ClaimTypes.NameIdentifier, "true");
+    });
+});
 
 
 
