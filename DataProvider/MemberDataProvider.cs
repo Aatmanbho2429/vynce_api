@@ -1,7 +1,14 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Azure;
+using MailKit.Net.Smtp;
+using MailKit.Security;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Data.SqlClient;
+using MimeKit;
+using Org.BouncyCastle.Asn1.Mozilla;
 using System.Data;
 using System.Numerics;
+using System.Security.Cryptography;
+using System.Text;
 using vynce_api.DataProvider.Interface;
 using vynce_api.Model;
 using vynce_api.Model.Request;
@@ -67,6 +74,18 @@ namespace vynce_api.DataProvider
                 response.membership_id = ConvertIntiger(reader, "membership_id");
                 response.created_date = ConvertToDate(reader, "created_date");
                 response.modified_date = ConvertToDate(reader, "modified_date");
+            }
+            return response;
+        }
+
+        public async Task<MemberForgetPasswordResponse> ForgetPasswordReader(SqlDataReader reader)
+        {
+            MemberForgetPasswordResponse response = new MemberForgetPasswordResponse();
+            while (await reader.ReadAsync())
+            {
+                response.member_id = ConvertIntiger(reader, "member_id");
+                response.password = ConvertString(reader, "password");
+                response.name = ConvertString(reader, "name");
             }
             return response;
         }
@@ -174,10 +193,10 @@ namespace vynce_api.DataProvider
             };
         }
 
-        public async Task<BaseResponse<int>> MemberExist(string email)
+        public async Task<BaseResponse<int>> MemberExist(MemberExistEmailRequest request)
         {
             var sqlParameters = new List<SqlParameter>() {
-                new SqlParameter("i_email",email)
+                new SqlParameter("i_email",request.email)
             };
 
             sqlParameters.Add(new SqlParameter("o_output_message", SqlDbType.VarChar, 100) { Direction = ParameterDirection.Output });
@@ -190,5 +209,191 @@ namespace vynce_api.DataProvider
                 message = response.message
             };
         }
+
+        public async Task<BaseResponse<int>> MemberSendEmail(MemberSendEmailRequest request)
+        {
+            string newPassword = GenerateRandomPassword();
+            var sqlParameters = new List<SqlParameter>() {
+                new SqlParameter("i_email",request.email),
+                new SqlParameter("i_new_password",newPassword)
+            };
+            var responseFromDb = await _dataProviderHelper.ExecuteReaderAsync(Procedures.MEMBER_FORGET_PASSWORD_V1, ForgetPasswordReader, sqlParameters.ToArray());
+
+            var response = await SendEmail(request.email, responseFromDb.password,responseFromDb.name);
+
+            return new BaseResponse<int>()
+            {
+                data = response.status,
+                message = response.message
+            };
+        }
+
+        public async Task<BaseResponse<int>> SendEmail(string email,string password,string receiverName)
+        {
+            try
+            {
+                var message = new MimeMessage();
+                message.From.Add(new MailboxAddress("Test Sender", "aatman.bhoraniya@stridelysolutions.com"));
+                message.To.Add(MailboxAddress.Parse("aatman.bhoraniya@stridelysolutions.com"));
+                message.Subject = "Login Credentials";
+
+                string htmlMessage = @"
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"" />
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"" />
+    <title>Login Credentials</title>
+</head>
+<body style=""margin:0; padding:0; background-color:#f4f6f8; font-family:Arial, Helvetica, sans-serif;"">
+
+    <table width=""100%"" cellpadding=""0"" cellspacing=""0"" style=""background-color:#f4f6f8; padding:30px 0;"">
+        <tr>
+            <td align=""center"">
+                <table width=""600"" cellpadding=""0"" cellspacing=""0""
+                       style=""background-color:#ffffff; border-radius:8px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.08);"">
+
+                    <!-- Header -->
+                    <tr>
+                        <td style=""background-color:#0d6efd; padding:20px; text-align:center; color:#ffffff;"">
+                            <h2 style=""margin:0; font-size:22px;"">
+                                [#title#]
+                            </h2>
+                        </td>
+                    </tr>
+
+                    <!-- Content -->
+                    <tr>
+                        <td style=""padding:30px; color:#333333;"">
+                            <p style=""margin:0 0 15px 0; font-size:15px;"">
+                                Hello [#recipientName#],
+                            </p>
+
+                            <p style=""margin:0 0 20px 0; font-size:15px;"">
+                                [#description#]
+                            </p>
+                            <p style=""margin:0 0 20px 0; font-size:15px;color:red;text-transform:uppercase"">
+                                [#warning#]
+                            </p>
+
+                            <table width=""100%"" cellpadding=""0"" cellspacing=""0""
+                                   style=""background-color:#f8f9fa; border:1px solid #dee2e6; border-radius:6px; padding:15px;"">
+                                <tr>
+                                    <td style=""padding:8px 0; font-size:14px;"">
+                                        <strong>Email:</strong> [#email#]
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style=""padding:8px 0; font-size:14px;"">
+                                        <strong>Password:</strong> [#password#]
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <p style=""margin:20px 0 0 0; font-size:14px; color:#555555;"">
+                                For security reasons, please change your password after logging in.
+                            </p>
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td style=""background-color:#f1f3f5; padding:15px; text-align:center; font-size:12px; color:#6c757d;"">
+                            © [#year#] Your Company Name. All rights reserved.
+                        </td>
+                    </tr>
+
+                </table>
+            </td>
+        </tr>
+    </table>
+
+</body>
+</html>";
+                htmlMessage = htmlMessage
+                    .Replace("[#title#]","Password Changed")
+                    .Replace("[#description#]", "Your password changed successfully. Below are your login cridentials")
+                .Replace("[#warning#]", "Please do not share with anyone.")
+                .Replace("[#recipientName#]", receiverName)
+                .Replace("[#email#]", email)
+                .Replace("[#password#]", password)
+                .Replace("[#year#]", DateTime.Now.Year.ToString());
+
+                message.Body = new TextPart("html")
+                {
+                    Text = htmlMessage
+                };
+
+                using (var client = new SmtpClient())
+                {
+                    await client.ConnectAsync("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
+
+                    await client.AuthenticateAsync(
+                        "aatmanbhoraniya12@gmail.com",
+                        "xnlhypclblvdqvgc"
+                    );
+
+                    await client.SendAsync(message);
+                    await client.DisconnectAsync(true);
+                }
+
+                return new BaseResponse<int>()
+                {
+                    data = 1,
+                    message = "Password send in your email"
+                };
+            }
+            catch (Exception ex)
+            {
+                return new BaseResponse<int>()
+                {
+                    data = 0,
+                    message = "Technical error occured!"
+                };
+            }
+        }
+
+        public string GenerateRandomPassword()
+        {
+            const int length = 8;
+
+            const string lowerCase = "abcdefghijklmnopqrstuvwxyz";
+            const string upperCase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            const string numbers = "0123456789";
+            const string allChars = lowerCase + upperCase + numbers;
+
+            var password = new StringBuilder();
+            var rng = RandomNumberGenerator.Create();
+
+            byte[] buffer = new byte[1];
+
+            rng.GetBytes(buffer);
+            password.Append(lowerCase[buffer[0] % lowerCase.Length]);
+
+            rng.GetBytes(buffer);
+            password.Append(upperCase[buffer[0] % upperCase.Length]);
+
+            rng.GetBytes(buffer);
+            password.Append(numbers[buffer[0] % numbers.Length]);
+
+            while (password.Length < length)
+            {
+                rng.GetBytes(buffer);
+                password.Append(allChars[buffer[0] % allChars.Length]);
+            }
+
+            char[] chars = password.ToString().ToCharArray();
+            for (int i = chars.Length - 1; i > 0; i--)
+            {
+                rng.GetBytes(buffer);
+                int j = buffer[0] % (i + 1);
+
+                char temp = chars[i];
+                chars[i] = chars[j];
+                chars[j] = temp;
+            }
+
+            return new string(chars);
+        } 
     }
 }

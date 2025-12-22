@@ -61,11 +61,22 @@ namespace vynce_api.Controllers
         [AllowAnonymous]
 
         [HttpPost("exist")]
-        public async Task<BaseResponse<int>> MemberExist(string email)
+        public async Task<BaseResponse<int>> MemberExist(MemberExistEmailRequest request)
         {
             return await DelegateControllerCall(async () =>
             {
-                return await _memberDataProvider.MemberExist(email);
+                return await _memberDataProvider.MemberExist(request);
+            });
+        }
+
+        [AllowAnonymous]
+
+        [HttpPost("send-email")]
+        public async Task<BaseResponse<int>> MemberSendEmail(MemberSendEmailRequest request)
+        {
+            return await DelegateControllerCall(async () =>
+            {
+                return await _memberDataProvider.MemberSendEmail(request);
             });
         }
     }

@@ -11,7 +11,8 @@ namespace vynce_api.DataProvider.Interface
         Task<BaseResponse<int>> MemberDelete(string id);
         Task<BaseResponse<int>> MemberUpdate(string id, MemberUpdateRequest request);
 
-        Task<BaseResponse<int>> MemberExist(string email);
+        Task<BaseResponse<int>> MemberExist(MemberExistEmailRequest request);
+        Task<BaseResponse<int>> MemberSendEmail(MemberSendEmailRequest request);
 
     }
 }
