@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.Data.SqlClient;
 using System.Data;
 using System.Numerics;
 using vynce_api.DataProvider.Interface;
@@ -165,6 +166,23 @@ namespace vynce_api.DataProvider
             sqlParameters.Add(new SqlParameter("o_output_message", SqlDbType.VarChar, 100) { Direction = ParameterDirection.Output });
             sqlParameters.Add(new SqlParameter("o_output_status", SqlDbType.Int) { Direction = ParameterDirection.Output });
             var response = await _dataProviderHelper.ExecuteNonQueryAsync(Procedures.MEMBER_UPDATE_V1, sqlParameters.ToArray());
+
+            return new BaseResponse<int>()
+            {
+                data = response.status,
+                message = response.message
+            };
+        }
+
+        public async Task<BaseResponse<int>> MemberExist(string email)
+        {
+            var sqlParameters = new List<SqlParameter>() {
+                new SqlParameter("i_email",email)
+            };
+
+            sqlParameters.Add(new SqlParameter("o_output_message", SqlDbType.VarChar, 100) { Direction = ParameterDirection.Output });
+            sqlParameters.Add(new SqlParameter("o_output_status", SqlDbType.Int) { Direction = ParameterDirection.Output });
+            var response = await _dataProviderHelper.ExecuteNonQueryAsync(Procedures.MEMBER_EXIST_EMAIL_V1, sqlParameters.ToArray());
 
             return new BaseResponse<int>()
             {

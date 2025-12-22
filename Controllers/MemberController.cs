@@ -58,5 +58,15 @@ namespace vynce_api.Controllers
                 return await _memberDataProvider.MemberUpdate(id, request);
             });
         }
+        [AllowAnonymous]
+
+        [HttpPost("exist")]
+        public async Task<BaseResponse<int>> MemberExist(string email)
+        {
+            return await DelegateControllerCall(async () =>
+            {
+                return await _memberDataProvider.MemberExist(email);
+            });
+        }
     }
 }

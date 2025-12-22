@@ -10,6 +10,7 @@
         public static string MEMBER_GET_V1 = "MEMBER_GET_V1 ";
         public static string MEMBER_DELETE_V1 = "MEMBER_DELETE_V1 ";
         public static string MEMBER_UPDATE_V1 = "MEMBER_UPDATE_V1 ";
+        public static string MEMBER_EXIST_EMAIL_V1 = "MEMBER_EXIST_EMAIL_V1 ";
         #endregion
     }
 }
