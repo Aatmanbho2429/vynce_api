@@ -47,6 +47,38 @@ namespace vynce_api.DataProvider
             response.list = members;
             return response;
         }
+
+        public async Task<MembershipCardListResponse> GetMembershipcardListReader(SqlDataReader reader)
+        {
+            MembershipCardListResponse response = new MembershipCardListResponse();
+            var members = new List<MembershipCard>();
+
+            while (await reader.ReadAsync())
+            {
+                members.Add(new MembershipCard()
+                {
+                    membership_card_id = ConvertString(reader, "membership_card_id"),
+                    name = ConvertString(reader, "name"),
+                    description = ConvertString(reader, "descrption"),
+                    price = ConvertString(reader, "price"),
+                    duration = ConvertIntiger(reader, "duration"),
+                    status = ConvertIntiger(reader, "status"),
+                    created_date = ConvertToDate(reader, "created_date"),
+                    modified_date = ConvertToDate(reader, "modified_date")
+                });
+            }
+
+            if (reader.NextResult())
+            {
+                while (await reader.ReadAsync())
+                {
+                    response.total_count = ConvertIntiger(reader, "total_record");
+                }
+            }
+
+            response.list = members;
+            return response;
+        }
         public async Task<MembershipCardGetResponse> MembershipcardGetReader(SqlDataReader reader)
         {
             MembershipCardGetResponse response = new MembershipCardGetResponse();
@@ -160,6 +192,20 @@ namespace vynce_api.DataProvider
             {
                 data = response.status,
                 message = response.message
+            };
+        }
+
+        public async Task<BaseResponse<MembershipCardListResponse>> GetMembershipList()
+        {
+            var sqlParameters = new List<SqlParameter>()
+            {
+
+            };
+            var response = await _dataProviderHelper.ExecuteReaderAsync(Procedures.MEMBERSHIP_DROPDOWN_LIST_V1, GetMembershipcardListReader, sqlParameters.ToArray());
+
+            return new BaseResponse<MembershipCardListResponse>()
+            {
+                data = response
             };
         }
     }

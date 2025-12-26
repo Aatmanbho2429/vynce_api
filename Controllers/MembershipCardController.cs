@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using vynce_api.DataProvider;
 using vynce_api.DataProvider.Interface;
@@ -57,6 +58,14 @@ namespace vynce_api.Controllers
             return await DelegateControllerCall(async () =>
             {
                 return await _membershipcardDataProvider.MembershipCardUpdate(id, request);
+            });
+        }
+        [HttpPost("membership-list")]
+        public async Task<BaseResponse<MembershipCardListResponse>> GetMembershipList(MembershipCardListRequest request)
+        {
+            return await DelegateControllerCall(async () =>
+            {
+                return await _membershipcardDataProvider.GetMembershipList();
             });
         }
     }
