@@ -151,9 +151,11 @@ namespace vynce_api.DataProvider
 
         public async Task<BaseResponse<int>> MemberDelete(string id)
         {
+            var modified_date = DateTime.Now;
             var sqlParameters = new List<SqlParameter>()
             {
-                new SqlParameter("i_member_id",id)
+                new SqlParameter("i_member_id",id),
+                new SqlParameter("i_modified_date",modified_date)
             };
             sqlParameters.Add(new SqlParameter("o_output_message", SqlDbType.VarChar, 100) { Direction = ParameterDirection.Output });
             sqlParameters.Add(new SqlParameter("o_output_status", SqlDbType.Int) { Direction = ParameterDirection.Output });

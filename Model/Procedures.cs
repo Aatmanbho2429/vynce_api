@@ -21,5 +21,9 @@
         public static string MEMBERSHIPCARD_DELETE_V1 = "MEMBERSHIPCARD_DELETE_V1 ";
         public static string MEMBERSHIPCARD_UPDATE_V1 = "MEMBERSHIPCARD_UPDATE_V1 ";
         #endregion
+
+        #region master
+        public static string MENUITEM_LIST_V1 = "MENUITEM_LIST_V1 ";
+        #endregion
     }
 }
