@@ -41,9 +41,9 @@ namespace vynce_api.DataProvider
             return response;
         }
 
-        private async Task<MemberGetResponse> ReaderMemberGetEmail(SqlDataReader reader)
+        private async Task<MemberGetEmailPasswordResponse> ReaderMemberGetEmailPassword(SqlDataReader reader)
         {
-            MemberGetResponse response = new MemberGetResponse();
+            MemberGetEmailPasswordResponse response = new MemberGetEmailPasswordResponse();
             while (await reader.ReadAsync())
             {
                 response.member_id = ConvertString(reader, "member_id");
@@ -56,6 +56,8 @@ namespace vynce_api.DataProvider
                 response.membership_id = ConvertIntiger(reader, "membership_id");
                 response.created_date = ConvertToDate(reader, "created_date");
                 response.modified_date = ConvertToDate(reader, "modified_date");
+                response.membership_start_date = ConvertToDate(reader, "membership_start_date");
+                response.membership_end_date = ConvertToDate(reader, "membership_end_date");
             }
             return response;
         }
@@ -153,7 +155,7 @@ namespace vynce_api.DataProvider
                 new SqlParameter("i_email",request.email)
             };
 
-            var responseFromDb = await _dataProviderHelper.ExecuteReaderAsync(Procedures.MEMBER_GET_EMAIL_V1, ReaderMemberGetEmail, sqlParameters.ToArray());
+            var responseFromDb = await _dataProviderHelper.ExecuteReaderAsync(Procedures.MEMBER_GET_EMAIL_PASSWORD_V1, ReaderMemberGetEmailPassword, sqlParameters.ToArray());
 
             var response = await SendEmail(request.email, responseFromDb.password, responseFromDb.name);
 

@@ -8,6 +8,8 @@ namespace vynce_api.DataProvider.Interface
         Task<BaseResponse<int>> AddMember(MemberAddRequest request);
         Task<BaseResponse<MemberListResponse>> MemberList(MemberListRequest request);
         Task<BaseResponse<MemberGetResponse>> MemberGet(string id);
+        Task<BaseResponse<MemberGetProfileResponse>> MemberGetProfile(string id);
+        Task<BaseResponse<MemberGetFreeSearchResponse>> MemberGetFreeSearch(string id);
         Task<BaseResponse<int>> MemberDelete(string id);
         Task<BaseResponse<int>> MemberUpdate(string id, MemberUpdateRequest request);
 

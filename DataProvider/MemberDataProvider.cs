@@ -37,13 +37,14 @@ namespace vynce_api.DataProvider
                     member_id = ConvertString(reader, "member_id"),
                     name = ConvertString(reader, "name"),
                     email = ConvertString(reader, "email"),
-                    password = ConvertString(reader, "password"),
                     phone = ConvertString(reader, "phone"),
                     role_id = ConvertIntiger(reader, "role_id"),
                     status = ConvertIntiger(reader, "status"),
                     membership_id = ConvertIntiger(reader, "membership_id"),
                     created_date = ConvertToDate(reader, "created_date"),
-                    modified_date = ConvertToDate(reader, "modified_date")
+                    modified_date = ConvertToDate(reader, "modified_date"),
+                    membership_start_date = ConvertToDate(reader, "membership_start_date"),
+                    membership_end_date = ConvertToDate(reader, "membership_end_date")
                 });
             }
 
@@ -68,16 +69,51 @@ namespace vynce_api.DataProvider
                 response.name = ConvertString(reader, "name");
                 response.email = ConvertString(reader, "email");
                 response.phone = ConvertString(reader, "phone");
-                response.password = ConvertString(reader, "password");
                 response.role_id = ConvertIntiger(reader, "role_id");
                 response.status = ConvertIntiger(reader, "status");
                 response.membership_id = ConvertIntiger(reader, "membership_id");
+                response.created_date = ConvertToDate(reader, "created_date");
+                response.modified_date = ConvertToDate(reader, "modified_date");
+                response.membership_start_date = ConvertToDate(reader, "membership_start_date");
+                response.membership_end_date = ConvertToDate(reader, "membership_end_date");
+            }
+            return response;
+        }
+
+        public async Task<MemberGetProfileResponse> MemberGetProfileReader(SqlDataReader reader)
+        {
+            MemberGetProfileResponse response = new MemberGetProfileResponse();
+            while (await reader.ReadAsync())
+            {
+                response.member_id = ConvertString(reader, "member_id");
+                response.name = ConvertString(reader, "name");
+                response.email = ConvertString(reader, "email");
+                response.phone = ConvertString(reader, "phone");
+                response.membership_name = ConvertString(reader, "membership_name");
+                response.role_id = ConvertIntiger(reader, "role_id");
+                response.status = ConvertIntiger(reader, "status");
+                response.membership_id = ConvertIntiger(reader, "membership_id");
+                response.membership_start_date = ConvertToDate(reader, "membership_start_date");
+                response.membership_end_date = ConvertToDate(reader, "membership_end_date");
                 response.created_date = ConvertToDate(reader, "created_date");
                 response.modified_date = ConvertToDate(reader, "modified_date");
             }
             return response;
         }
 
+        public async Task<MemberGetFreeSearchResponse> MemberGetFreeSearchReader(SqlDataReader reader)
+        {
+            MemberGetFreeSearchResponse response = new MemberGetFreeSearchResponse();
+            while (await reader.ReadAsync())
+            {
+                response.members_free_search_id = ConvertIntiger(reader, "members_free_search_id");
+                response.member_id = ConvertIntiger(reader, "member_id");
+                response.free_search_remaining = ConvertIntiger(reader, "free_search_remaining");
+                response.created_date = ConvertToDate(reader, "created_date");
+                response.modified_date = ConvertToDate(reader, "modified_date");
+            }
+            return response;
+        }
         public async Task<MemberForgetPasswordResponse> ForgetPasswordReader(SqlDataReader reader)
         {
             MemberForgetPasswordResponse response = new MemberForgetPasswordResponse();
@@ -149,6 +185,34 @@ namespace vynce_api.DataProvider
             };
         }
 
+        public async Task<BaseResponse<MemberGetProfileResponse>> MemberGetProfile(string id)
+        {
+            var sqlParameters = new List<SqlParameter>()
+            {
+                new SqlParameter("i_member_id",id)
+            };
+            var response = await _dataProviderHelper.ExecuteReaderAsync(Procedures.MEMBER_GET_PROFILE_V1, MemberGetProfileReader, sqlParameters.ToArray());
+
+            return new BaseResponse<MemberGetProfileResponse>()
+            {
+                data = response
+            };
+        }
+
+        public async Task<BaseResponse<MemberGetFreeSearchResponse>> MemberGetFreeSearch(string id)
+        {
+            var sqlParameters = new List<SqlParameter>()
+            {
+                new SqlParameter("i_member_id",id)
+            };
+            var response = await _dataProviderHelper.ExecuteReaderAsync(Procedures.MEMBER_FREE_SEARCH_GET_V1, MemberGetFreeSearchReader, sqlParameters.ToArray());
+
+            return new BaseResponse<MemberGetFreeSearchResponse>()
+            {
+                data = response
+            };
+        }
+
         public async Task<BaseResponse<int>> MemberDelete(string id)
         {
             var modified_date = DateTime.Now;
@@ -178,7 +242,6 @@ namespace vynce_api.DataProvider
                 new SqlParameter("i_name",request.name),
                 new SqlParameter("i_email",request.email),
                 new SqlParameter("i_phone",request.phone),
-                new SqlParameter("i_password",request.password),
                 new SqlParameter("i_role_id",request.role_id),
                 new SqlParameter("i_status",request.status),
                 new SqlParameter("i_membership_id",request.membership_id),

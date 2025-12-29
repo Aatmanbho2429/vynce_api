@@ -42,6 +42,24 @@ namespace vynce_api.Controllers
                 return await _memberDataProvider.MemberGet(id);
             });
         }
+        [HttpGet("profile/{id}")]
+        public async Task<BaseResponse<MemberGetProfileResponse>> MemberGetProfile(string id)
+        {
+            return await DelegateControllerCall(async () =>
+            {
+                return await _memberDataProvider.MemberGetProfile(id);
+            });
+        }
+
+        [HttpGet("free-search/{id}")]
+        public async Task<BaseResponse<MemberGetFreeSearchResponse>> MemberGetFreeSearch(string id)
+        {
+            return await DelegateControllerCall(async () =>
+            {
+                return await _memberDataProvider.MemberGetFreeSearch(id);
+            });
+        }
+
         [HttpDelete("{id}")]
         public async Task<BaseResponse<int>> MemberDelete(string id)
         {

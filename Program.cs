@@ -22,6 +22,7 @@ builder.Services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddTransient<IDataProviderHelper, DataProviderHelper>();
 builder.Services.AddTransient<IMemberDataProvider, MemberDataProvider>();
 builder.Services.AddTransient<IMasterDataProvider, MasterDataProvider>();
+builder.Services.AddTransient<ISearchDataProvider, SearchDataProvider>();
 builder.Services.AddTransient<IMembershipCardDataProvider, MembershipCardDataProvider>();
 builder.Services.AddTransient<ILoginDataProvider, LoginDataProvider>();
 builder.Services.AddTransient<IJwtTokenDataProvider, JwtTokenDataProvider>();
