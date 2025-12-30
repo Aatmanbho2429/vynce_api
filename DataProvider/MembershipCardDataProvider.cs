@@ -195,11 +195,14 @@ namespace vynce_api.DataProvider
             };
         }
 
-        public async Task<BaseResponse<MembershipCardListResponse>> GetMembershipList()
+        public async Task<BaseResponse<MembershipCardListResponse>> GetMembershipList(MembershipCardListRequest request)
         {
             var sqlParameters = new List<SqlParameter>()
             {
-
+                new SqlParameter("page_size",request.page_size),
+                new SqlParameter("page_no",request.page_no),
+                new SqlParameter("sorting_by",request.sorting_by),
+                new SqlParameter("sorting_column",request.sorting_column)
             };
             var response = await _dataProviderHelper.ExecuteReaderAsync(Procedures.MEMBERSHIP_DROPDOWN_LIST_V1, GetMembershipcardListReader, sqlParameters.ToArray());
 

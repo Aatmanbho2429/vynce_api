@@ -65,7 +65,7 @@ namespace vynce_api.Controllers
         {
             return await DelegateControllerCall(async () =>
             {
-                return await _membershipcardDataProvider.GetMembershipList();
+                return await _membershipcardDataProvider.GetMembershipList(request);
             });
         }
     }

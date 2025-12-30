@@ -10,6 +10,6 @@ namespace vynce_api.DataProvider.Interface
         Task<BaseResponse<MembershipCardGetResponse>> MembershipCardGet(string id);
         Task<BaseResponse<int>> MembershipCardDelete(string id);
         Task<BaseResponse<int>> MembershipCardUpdate(string id, MembershipCardUpdateRequest request);
-        Task<BaseResponse<MembershipCardListResponse>> GetMembershipList();
+        Task<BaseResponse<MembershipCardListResponse>> GetMembershipList(MembershipCardListRequest request);
     }
 }
