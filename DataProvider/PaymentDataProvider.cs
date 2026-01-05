@@ -18,6 +18,38 @@ namespace vynce_api.DataProvider
             _dataProviderHelper = dataProviderHelper;
         }
 
+        #region reader
+        public async Task<PurchaseHistoryListResponse> PurchaseHistoryListReader(SqlDataReader reader)
+        {
+            PurchaseHistoryListResponse response = new PurchaseHistoryListResponse();
+            var members = new List<PurchaseHistory>();
+
+            while (await reader.ReadAsync())
+            {
+                members.Add(new PurchaseHistory()
+                {
+                    payment_date = ConvertString(reader, "payment_date"),
+                    amount = ConvertString(reader, "amount"),
+                    membership_card_name = ConvertString(reader, "membership_card_name"),
+                    membership_card_id = ConvertIntiger(reader, "membership_card_id"),
+                    //membership_start_date = ConvertToDate(reader, "membership_start_date"),
+                    //membership_end_date = ConvertToDate(reader, "membership_end_date")
+                });
+            }
+
+            if (reader.NextResult())
+            {
+                while (await reader.ReadAsync())
+                {
+                    response.total_count = ConvertIntiger(reader, "total_record");
+                }
+            }
+
+            response.list = members;
+            return response;
+        }
+        #endregion
+
         public async Task<BaseResponse<int>> AddPayment(PaymentAddRequest request)
         {
             var payment_date = DateTime.UtcNow;
@@ -110,6 +142,24 @@ namespace vynce_api.DataProvider
                 };
             }
 
+        }
+
+        public async Task<BaseResponse<PurchaseHistoryListResponse>> PurchaseHistoryList(PurchaseHistoryListRequest request)
+        {
+            var sqlParameters = new List<SqlParameter>()
+            {
+                new SqlParameter("page_size",request.page_size),
+                new SqlParameter("page_no",request.page_no),
+                new SqlParameter("sorting_by",request.sorting_by),
+                new SqlParameter("sorting_column",request.sorting_column),
+                new SqlParameter("i_member_id",request.member_id)
+            };
+            var response = await _dataProviderHelper.ExecuteReaderAsync(Procedures.PURCHASE_HISTORY_LIST_V1, PurchaseHistoryListReader, sqlParameters.ToArray());
+
+            return new BaseResponse<PurchaseHistoryListResponse>()
+            {
+                data = response
+            };
         }
     }
 }

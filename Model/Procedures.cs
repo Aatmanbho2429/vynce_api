@@ -49,6 +49,7 @@
 
         #region payment
         public static string PAYMENT_ADD_V1 = "PAYMENT_ADD_V1 ";
+        public static string PURCHASE_HISTORY_LIST_V1 = "PURCHASE_HISTORY_LIST_V1 ";
         #endregion
     }
 }

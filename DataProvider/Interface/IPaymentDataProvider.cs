@@ -8,5 +8,6 @@ namespace vynce_api.DataProvider.Interface
         Task<BaseResponse<int>> AddPayment(PaymentAddRequest request);
         Task<BaseResponse<RazorOrderResponse>> RazorOrder(RazorOrderRequest request);
         Task<BaseResponse<int>> RazorPaymentVerify(RazorPayVerifyRequest request);
+        Task<BaseResponse<PurchaseHistoryListResponse>> PurchaseHistoryList(PurchaseHistoryListRequest request);
     }
 }

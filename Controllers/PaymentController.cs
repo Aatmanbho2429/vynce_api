@@ -47,5 +47,13 @@ namespace vynce_api.Controllers
                 return await _paymentDataProvider.AddPayment(request);
             });
         }
+        [HttpPost("purchase-history")]
+        public async Task<BaseResponse<PurchaseHistoryListResponse>> PurchaseHistoryList(PurchaseHistoryListRequest request)
+        {
+            return await DelegateControllerCall(async () =>
+            {
+                return await _paymentDataProvider.PurchaseHistoryList(request);
+            });
+        }
     }
 }

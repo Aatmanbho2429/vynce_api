@@ -172,7 +172,7 @@ namespace vynce_api.DataProvider
             {
                 var message = new MimeMessage();
                 message.From.Add(new MailboxAddress("Test Sender", "aatman.bhoraniya@stridelysolutions.com"));
-                message.To.Add(MailboxAddress.Parse("aatman.bhoraniya@stridelysolutions.com"));
+                message.To.Add(MailboxAddress.Parse(email));
                 message.Subject = "Login Credentials";
 
                 string htmlMessage = @"
