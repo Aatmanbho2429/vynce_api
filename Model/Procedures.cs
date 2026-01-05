@@ -36,5 +36,19 @@
         public static string SEARCH_POST_V1 = "SEARCH_POST_V1 ";
 
         #endregion
+
+        #region processing-fee
+        public static string PROCESSINGFEE_ADD_V1 = "PROCESSINGFEE_ADD_V1 ";
+        public static string PROCESSINGFEE_LIST_V1 = "PROCESSINGFEE_LIST_V1 ";
+        public static string PROCESSINGFEE_GET_V1 = "PROCESSINGFEE_GET_V1 ";
+        public static string PROCESSINGFEE_DELETE_V1 = "PROCESSINGFEE_DELETE_V1 ";
+        public static string PROCESSINGFEE_UPDATE_V1 = "PROCESSINGFEE_UPDATE_V1 ";
+        public static string PROCESSINGFEE_CHECKOUT_LIST_V1 = "PROCESSINGFEE_CHECKOUT_LIST_V1 ";
+        public static string PROCESSINGFEETYPE_DROPDOWN_LIST_V1 = "PROCESSINGFEETYPE_DROPDOWN_LIST_V1 "; 
+        #endregion
+
+        #region payment
+        public static string PAYMENT_ADD_V1 = "PAYMENT_ADD_V1 ";
+        #endregion
     }
 }

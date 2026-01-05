@@ -78,11 +78,11 @@ namespace vynce_api.DataProvider
             return value == DBNull.Value ? 0 : Convert.ToDecimal(value);
         }
 
-        internal DateTime ConvertToDate(DbDataReader reader, string column)
+        internal string ConvertToDate(DbDataReader reader, string column)
         {
 
             var value = reader[column];
-            return value == DBNull.Value ? Convert.ToDateTime(null) : Convert.ToDateTime(value);
+            return value == DBNull.Value ? "" : Convert.ToDateTime(value).ToString();
         }
 
         //TODO

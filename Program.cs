@@ -15,6 +15,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 ApplicationConfigurations.ConnectionString = builder.Configuration.GetSection("ApiOptions:SqlConnection").Value;
+ApplicationConfigurations.razor_key_id = builder.Configuration.GetSection("Razor:key_id").Value;
+ApplicationConfigurations.razor_key_secret = builder.Configuration.GetSection("Razor:key_secret").Value;
 ApplicationConfigurations.encryptionKey = builder.Configuration.GetSection("encryptionKey").Value;
 
 #region dependency injection
@@ -23,6 +25,8 @@ builder.Services.AddTransient<IDataProviderHelper, DataProviderHelper>();
 builder.Services.AddTransient<IMemberDataProvider, MemberDataProvider>();
 builder.Services.AddTransient<IMasterDataProvider, MasterDataProvider>();
 builder.Services.AddTransient<ISearchDataProvider, SearchDataProvider>();
+builder.Services.AddTransient<IPaymentDataProvider, PaymentDataProvider>();
+builder.Services.AddTransient<IProcessingFeeDataProvider, ProcessingFeeDataProvider>();
 builder.Services.AddTransient<IMembershipCardDataProvider, MembershipCardDataProvider>();
 builder.Services.AddTransient<ILoginDataProvider, LoginDataProvider>();
 builder.Services.AddTransient<IJwtTokenDataProvider, JwtTokenDataProvider>();

@@ -91,7 +91,7 @@ namespace vynce_api.DataProvider
                 new SqlParameter("i_password",newPassword),
                 new SqlParameter("i_role_id",2),
                 new SqlParameter("i_status",1),
-                new SqlParameter("i_membership_id",'0'),
+                new SqlParameter("i_membership_id","0"),
                 new SqlParameter("i_created_date",created_date),
             };
 
