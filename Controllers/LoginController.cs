@@ -26,7 +26,7 @@ namespace vynce_api.Controllers
         {
             return await DelegateControllerCall(async () =>
             {
-                return await _jwtDataProvider.defaultToken(request.email, request.password);
+                return await _jwtDataProvider.defaultToken(request.email, request.password); 
             });
         }
 
